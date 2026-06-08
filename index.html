@@ -141,6 +141,7 @@ function finish() {
     let time = document.getElementById("timePick").value;
     let food = document.getElementById("food").value;
 
+    // 1 órával korábbi idő számítása
     let fullDateTime = new Date(date + "T" + time);
     fullDateTime.setHours(fullDateTime.getHours() - 1);
 
@@ -155,29 +156,10 @@ function finish() {
     document.getElementById("step3").classList.add("hidden");
     document.getElementById("step4").classList.remove("hidden");
 
-    let message =
-`💖 Randink részletei:
-📅 Időpont: ${date} ${time}
-⏰ Én 1 órával előbb: ${earlier}
-🍽️ Étel: ${food}`;
-
-    document.getElementById("finalText").innerText = message;
-
-    // iPhone / mobil share
-    document.getElementById("shareBtn").onclick = async () => {
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: "Randink 💖",
-                    text: message
-                });
-            } catch (err) {
-                alert("Megosztás megszakítva");
-            }
-        } else {
-            alert("Ez a böngésző nem támogatja a megosztást");
-        }
-    };
+    document.getElementById("finalText").innerText =
+        `💖 Találkozó: ${date} ${time}
+⏰ Én itt leszek 1 órával előbb: ${earlier}
+🍽️ Választott étel/program: ${food}`;
 }
 </script>
 
