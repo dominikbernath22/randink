@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>💖 Randink</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffb6c1, #ffe4e1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 400px;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.yes {
+    background: #4CAF50;
+    color: white;
+}
+
+.no {
+    background: #f44336;
+    color: white;
+    position: absolute;
+}
+
+input, select {
+    padding: 10px;
+    margin-top: 10px;
+    width: 80%;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 1. LÉPÉS -->
+<div class="card" id="step1">
+    <h1>Szeretnél velem randizni? 💖</h1>
+    <button class="yes" onclick="next(2)">Igen</button>
+    <button class="no" id="noBtn">Nem</button>
+</div>
+
+<!-- 2. LÉPÉS -->
+<div class="card hidden" id="step2">
+    <h1>Mikor találkozunk? 📅</h1>
+
+    <input type="date" id="datePick"/>
+    <br><br>
+
+    <input type="time" id="timePick"/>
+
+    <br>
+    <button class="yes" onclick="next(3)">Tovább</button>
+</div>
+
+<!-- 3. LÉPÉS -->
+<div class="card hidden" id="step3">
+    <h1>💖 Randink részletei</h1>
+
+    <p id="summary"></p>
+
+    <h3>Mit ennél/hova mennel 🍽️</h3>
+    <select id="food">
+        <option>Sushi 🍣 </option>
+        <option>Burger 🍔 </option>
+        <option>Pizza 🍕 </option>
+        <option>Mozi 🍿 </option>
+        <option>Naplemente 🌄 </option>
+        <option>Vadaspark 🐻 </option>
+    </select>
+
+    <br>
+    <button class="yes" onclick="finish()">Kész 💖</button>
+</div>
+
+<!-- 4. LÉPÉS -->
+<div class="card hidden" id="step4">
+    <h1>💖 Kész vagyunk!</h1>
+    <p id="finalText"></p>
+</div>
+
+<script>
+let noBtn = document.getElementById("noBtn");
+
+noBtn.addEventListener("mouseover", () => {
+    let x = Math.random() * (window.innerWidth - 100);
+    let y = Math.random() * (window.innerHeight - 50);
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+});
+
+function next(step) {
+    for (let i = 1; i <= 4; i++) {
+        let el = document.getElementById("step" + i);
+        if (el) el.classList.add("hidden");
+    }
+    document.getElementById("step" + step).classList.remove("hidden");
+
+    if (step === 3) {
+        let date = document.getElementById("datePick").value;
+        let time = document.getElementById("timePick").value;
+
+        document.getElementById("summary").innerText =
+            "Választott időpont: " + date + " " + time;
+    }
+}
+
+function finish() {
+    let date = document.getElementById("datePick").value;
+    let time = document.getElementById("timePick").value;
+    let food = document.getElementById("food").value;
+
+    let fullDateTime = new Date(date + "T" + time);
+    fullDateTime.setHours(fullDateTime.getHours() - 1);
+
+    let earlier = fullDateTime.toLocaleString("hu-HU", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    document.getElementById("step3").classList.add("hidden");
+    document.getElementById("step4").classList.remove("hidden");
+
+    let message =
+`💖 Randink részletei:
+📅 Időpont: ${date} ${time}
+⏰ Én 1 órával előbb: ${earlier}
+🍽️ Étel: ${food}`;
+
+    document.getElementById("finalText").innerText = message;
+
+    // iPhone / mobil share
+    document.getElementById("shareBtn").onclick = async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: "Randink 💖",
+                    text: message
+                });
+            } catch (err) {
+                alert("Megosztás megszakítva");
+            }
+        } else {
+            alert("Ez a böngésző nem támogatja a megosztást");
+        }
+    };
+}
+</script>
+
+</body>
+</html>
